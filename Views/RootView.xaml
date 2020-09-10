@@ -1,0 +1,491 @@
+﻿<UserControl x:Class="YouTubeRipper.Views.RootView"
+						 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+						 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+						 xmlns:cal="http://www.caliburnproject.org"
+						 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+						 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+						 xmlns:vm="clr-namespace:YouTubeRipper.ViewModels"
+						 xmlns:vc="clr-namespace:YouTubeRipper.Markup.ValueConverters"
+						 xmlns:models="clr-namespace:YouTubeRipper.Models"
+						 cal:Bind.AtDesignTime="True"
+						 d:DataContext="{d:DesignInstance vm:RootViewModel, IsDesignTimeCreatable=True}"
+						 Designer.Orientation="Landscape"
+						 Designer.Viewport="HD720"
+						 StateAssist.State1="{Binding AddVideosPopupViewState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+						 mc:Ignorable="d"
+						 MDH.Swatch="Red">
+	<UserControl.Resources>
+		<BooleanToVisibilityConverter x:Key="b2vc"/>
+
+		<Style TargetType="Grid" x:Key="GridModalPopupContentControlExpanded">
+			<Setter Property="Opacity" Value="1"/>
+			<Setter Property="IsHitTestVisible" Value="True"/>
+			<Setter Property="HorizontalAlignment" Value="Center"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="RenderTransformOrigin" Value=".5,.5"/>
+			<Setter Property="RenderTransform">
+				<Setter.Value>
+					<TransformGroup>
+						<ScaleTransform CenterX=".5" CenterY=".5"/>
+						<TranslateTransform Y="0"/>
+					</TransformGroup>
+				</Setter.Value>
+			</Setter>
+		</Style>
+
+		<Style TargetType="ContentControl" x:Key="SimpleModalPopupContentControl">
+			<Setter Property="HorizontalAlignment" Value="Center"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="RenderTransformOrigin" Value=".5,.5"/>
+			<Setter Property="RenderTransform">
+				<Setter.Value>
+					<TransformGroup>
+						<ScaleTransform CenterX=".5" CenterY=".5"/>
+						<TranslateTransform Y="0"/>
+					</TransformGroup>
+				</Setter.Value>
+			</Setter>
+		</Style>
+	</UserControl.Resources>
+
+	<Grid Background="{StaticResource MDH.Palette.Grey.900}">
+		<VisualStateManager.VisualStateGroups>
+			<VisualStateGroup Name="AddVideosPopupViewStates">
+				<VisualState Name="AddVideosPopupViewContractedStates">
+					<Storyboard>
+						<SimpleContractElementStoryboardTemplate TargetName="AddVideosPopupView"/>
+
+						<DoubleAnimation Storyboard.TargetName="PART_Fader"
+														 Storyboard.TargetProperty="Opacity"
+														 To="0"
+														 Duration="0:0:0.3"/>
+					</Storyboard>
+				</VisualState>
+				<VisualState Name="AddVideosPopupViewExpandedStates">
+					<Storyboard>
+						<SimpleExpandElementStoryboardTemplate TargetName="AddVideosPopupView"/>
+
+						<DoubleAnimation Storyboard.TargetName="PART_Fader"
+														 Storyboard.TargetProperty="Opacity"
+														 To=".6"
+														 Duration="0:0:0.3"/>
+					</Storyboard>
+				</VisualState>
+			</VisualStateGroup>
+		</VisualStateManager.VisualStateGroups>
+
+
+		<Grid.RowDefinitions>
+			<RowDefinition Height="40"/>
+			<RowDefinition Height="100"/>
+			<RowDefinition/>
+		</Grid.RowDefinitions>
+
+		<Grid Background="{StaticResource MDH.Palette.Red.900}"
+					Panel.ZIndex="900">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition/>
+				<ColumnDefinition Width="Auto"/>
+			</Grid.ColumnDefinitions>
+
+			<Border Background="Black"
+							Grid.ColumnSpan="2"
+							Opacity=".3"/>
+			<StackPanel Grid.Column="1"
+									Orientation="Horizontal">
+				<Button Style="{StaticResource MDH.Controls.Buttons.PathButton.DarkSurface}"
+								Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}">
+					<Viewbox>
+						<Icon Foreground="White" Kind="Wifi"/>
+					</Viewbox>
+				</Button>
+
+				<Button Style="{StaticResource MDH.Controls.Buttons.PathButton.DarkSurface}"
+								Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}">
+					<Viewbox>
+						<Icon Foreground="White" Kind="Signal4g"/>
+					</Viewbox>
+				</Button>
+			</StackPanel>
+		</Grid>
+
+		<Grid Background="{StaticResource MDH.Palette.Red.900}"
+					Grid.Row="1"
+					Panel.ZIndex="1000"
+					Shadow.Level="3.5">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition/>
+				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition Width="Auto"/>
+			</Grid.ColumnDefinitions>
+
+			<Button Style="{StaticResource MDH.Controls.Buttons.PathButton.DarkSurface}"
+							Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}">
+				<Icon Foreground="White" Kind="Menu"/>
+			</Button>
+
+			<Label Style="{StaticResource t24pHeadline}"
+						 Grid.Column="1"
+						 Content="YouTube Ripper / Metadata Miner"
+						 FontWeight="Light"/>
+
+			<Button Style="{StaticResource MDH.Controls.Buttons.PathButton.DarkSurface}"
+							Grid.Column="3"
+							Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}">
+				<Icon Foreground="White" Kind="Video"/>
+			</Button>
+		</Grid>
+
+		<Grid Row="2">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="500"/>
+				<ColumnDefinition/>
+			</Grid.ColumnDefinitions>
+
+			<Grid ColumnSpan="2"
+						Panel.ZIndex="1000">
+				<Button Style="{StaticResource MDH.Controls.Buttons.FloatingActionButton}"
+								Height="96"
+								Margin="70 40"
+								HorizontalAlignment="Right"
+								MDH.Swatch="Pink"
+								VerticalAlignment="Bottom"
+								Command="{Binding OpenAddNewVideosDialogCommand}">
+					<Icon Foreground="White" Kind="Plus"/>
+				</Button>
+			</Grid>
+
+			<Grid Background="{StaticResource MDH.Palette.BlueGrey.850}"
+						Panel.ZIndex="1000"
+						Shadow.Level="3">
+				<ScrollViewer>
+					<StackPanel Orientation="Vertical">
+						<Label Content="Video Queue"
+									 HorizontalAlignment="Left"
+									 Style="{StaticResource t20pTitle}"
+									 FontWeight="Light"
+									 Padding="40 15"/>
+
+						<ItemsControl ItemsSource="{Binding Path=VideosQueued}">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate DataType="models:VideoInfo">
+									<Grid Height="90" 
+												Margin="10 5">
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="30"/>
+											<ColumnDefinition Width="160"/>
+											<ColumnDefinition/>
+										</Grid.ColumnDefinitions>
+
+										<Grid>
+											<StackPanel Orientation="Vertical"
+																	VerticalAlignment="Center">
+												<!--<Button Style="{StaticResource MDH.Controls.Buttons.PathButton.DarkSurface}"
+																Margin="0"
+																Height="35"
+																Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}">
+													<Icon Foreground="White" 
+																Kind="Delete"
+																Width="25"
+																Height="25"/>
+												</Button>-->
+
+												<ToggleButton IsChecked="{Binding ShouldDownload}"
+																			Width="20"
+																			Height="20"/>
+
+												<Icon Foreground="{StaticResource MDH.Palette.Teal.A400}"
+															Visibility="{Binding IsDownloadComplete, Converter={StaticResource b2vc}}"
+															Kind="CheckCircle"
+															Width="25"/>
+											</StackPanel>
+										</Grid>
+
+										<Grid Background="{StaticResource MDH.Palette.BlueGrey.600}"
+													Column="1"
+													Margin="10 5"
+													Shadow.Level="2">
+											<Image Stretch="UniformToFill">
+												<Image.Source>
+													<Binding Path="ThumbnailImageSource" Converter="{vc:UrlToImageSourceConverter}"/>
+												</Image.Source>
+											</Image>
+
+											<Label Content="{Binding VideoDuration}"
+														 Style="{StaticResource t12pCaption}"
+														 FontWeight="Light"
+														 HorizontalAlignment="Right"
+														 VerticalAlignment="Bottom"
+														 Padding="3 5">
+												<Label.Background>
+													<SolidColorBrush Color="Black" Opacity=".5"/>
+												</Label.Background>
+											</Label>
+										</Grid>
+
+										<Grid Column="2">
+											<StackPanel Orientation="Vertical">
+												<TextBlock Text="{Binding VideoTitle}"
+																	 Style="{StaticResource t13pBody2}"
+																	 FontWeight="Normal"
+																	 Padding="2 3"
+																	 TextWrapping="Wrap"/>
+
+												<Label Content="{Binding Uploader}"
+															 Style="{StaticResource t12pCaption}"
+															 FontWeight="Thin"
+															 Padding="2 3"
+															 HorizontalAlignment="Left"/>
+											</StackPanel>
+										</Grid>
+									</Grid>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<StackPanel Orientation="Vertical"/>
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+						</ItemsControl>
+					</StackPanel>
+				</ScrollViewer>
+			</Grid>
+
+			<Grid Column="1">
+				<Grid Background="{StaticResource MDH.Palette.BlueGrey.850}"
+							Margin="40 30"
+							HorizontalAlignment="Center"
+							VerticalAlignment="Center"
+							MinHeight="400"
+							MinWidth="500"
+							Shadow.Level="3">
+					<Grid.RowDefinitions>
+						<RowDefinition/>
+						<RowDefinition Height="60"/>
+					</Grid.RowDefinitions>
+
+					<StackPanel Orientation="Vertical"
+											Margin="30 10">
+						<StackPanel Orientation="Horizontal">
+							<Label Style="{StaticResource t24pHeadline}"
+										 Content="Downloader Progress"
+										 FontWeight="Light"
+										 Padding="5 10"/>
+
+							<StackPanel Orientation="Horizontal" Margin="10 0">
+								<Label Style="{StaticResource t15pSubhead}"
+											 Content="("
+											 FontWeight="Light"
+											 Padding="0 10"/>
+
+								<Label Style="{StaticResource t15pSubhead}"
+											 Content="{Binding CompletedVideos}"
+											 FontWeight="Light"
+											 Padding="0 10"/>
+							
+								<Label Style="{StaticResource t15pSubhead}"
+											 Content="/"
+											 FontWeight="Light"
+											 Padding="0 10"/>
+
+								<Label Style="{StaticResource t15pSubhead}"
+											 Content="{Binding VideosQueued.Count}"
+											 FontWeight="Light"
+											 Padding="0 10"/>
+
+								<Label Style="{StaticResource t15pSubhead}"
+											 Content=")"
+											 FontWeight="Light"
+											 Padding="0 10"/>
+							</StackPanel>
+						</StackPanel>
+
+						<Grid Height="90" 
+									Margin="10 5">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="160"/>
+								<ColumnDefinition/>
+							</Grid.ColumnDefinitions>
+
+							<Grid Background="{StaticResource MDH.Palette.BlueGrey.600}"
+										Column="0"
+										Margin="10 5"
+										Shadow.Level="2">
+								<Image Stretch="UniformToFill">
+									<Image.Source>
+										<Binding Path="CurrentProcessingVideoInfo.ThumbnailImageSource" Converter="{vc:UrlToImageSourceConverter}"/>
+									</Image.Source>
+								</Image>
+
+								<Label Content="{Binding CurrentProcessingVideoInfo.VideoDuration}"
+											 Style="{StaticResource t12pCaption}"
+											 FontWeight="Light"
+											 HorizontalAlignment="Right"
+											 VerticalAlignment="Bottom"
+											 Padding="3 5">
+									<Label.Background>
+										<SolidColorBrush Color="Black" Opacity=".5"/>
+									</Label.Background>
+								</Label>
+							</Grid>
+
+							<Grid Column="1">
+								<StackPanel Orientation="Vertical"
+														VerticalAlignment="Center">
+									<TextBlock Text="{Binding CurrentProcessingVideoInfo.VideoTitle, FallbackValue=Original YouTube Video Title}"
+														 Style="{StaticResource t13pBody2}"
+														 FontWeight="Normal"
+														 Padding="2 3"
+														 TextWrapping="Wrap"/>
+
+									<Label Content="{Binding CurrentProcessingVideoInfo.Uploader, FallbackValue=Uploader Name}"
+												 Style="{StaticResource t12pCaption}"
+												 FontWeight="Thin"
+												 Padding="2 3"
+												 HorizontalAlignment="Left"/>
+								</StackPanel>
+							</Grid>
+						</Grid>
+
+						<Grid Margin="10 5">
+							<TextBlock Text="{Binding CurrentProcessingVideoInfo.Description, FallbackValue=Original YouTube Video Description}"
+												 Style="{StaticResource t12pCaption}"
+												 FontWeight="Light"
+												 Padding="2 3"
+												 TextWrapping="Wrap"/>
+						</Grid>
+
+						<Grid Margin="10 5">
+							<StackPanel Orientation="Vertical">
+								<StackPanel Orientation="Horizontal">
+									<Label Style="{StaticResource t12pCaption}"
+												 Content="Download Progress:"
+												 FontWeight="Light"
+												 HorizontalAlignment="Left"
+												 Padding="5 10"/>
+									
+									<Label Style="{StaticResource t12pCaption}"
+												 Content="{Binding DownloadProcessPercentage, Converter={vc:DoubleToPercentageConverter}}"
+												 FontWeight="Light"
+												 HorizontalAlignment="Left"
+												 Padding="5 10"/>
+								</StackPanel>
+
+								<ProgressBar Value="{Binding DownloadProcessPercentage}"/>
+
+								<StackPanel Orientation="Horizontal">
+									<Label Style="{StaticResource t12pCaption}"
+												 Content="Conversion Progress:"
+												 FontWeight="Light"
+												 HorizontalAlignment="Left"
+												 Padding="5 10"/>
+
+									<Label Style="{StaticResource t12pCaption}"
+												 Content="{Binding ConversionProcessPercentage, Converter={vc:DoubleToPercentageConverter}}"
+												 FontWeight="Light"
+												 HorizontalAlignment="Left"
+												 Padding="5 10"/>
+								</StackPanel>
+
+								<ProgressBar Value="{Binding ConversionProcessPercentage}"/>
+							</StackPanel>
+						</Grid>
+					</StackPanel>
+
+					<StackPanel Grid.Row="1"
+											Orientation="Horizontal"
+											HorizontalAlignment="Right">
+						<Button Style="{StaticResource MDH.Controls.Buttons.FlatButton}"
+										Foreground="{StaticResource MDH.Palette.Red.600}"
+										MDH.Swatch="Red"
+										Command="{Binding BeginBatchDownloadCommand}"
+										Content="STOP"/>
+
+						<Button Style="{StaticResource MDH.Controls.Buttons.FlatButton}"
+										Foreground="{StaticResource MDH.Palette.Teal.600}"
+										MDH.Swatch="Teal"
+										Command="{Binding BeginBatchDownloadCommand}"
+										Content="START"/>
+					</StackPanel>
+				</Grid>
+
+			</Grid>
+		</Grid>
+
+		<Grid RowSpan="3"
+					d:IsHidden="true"
+					Panel.ZIndex="1000">
+			<Grid x:Name="PART_Fader" 
+						Background="Black" 
+						Opacity="0"
+						IsHitTestVisible="False"/>
+
+			<Grid x:Name="AddVideosPopupView"
+						Background="White"
+						Width="550"
+						Height="250"
+						Shadow.Level="4"
+						Style="{StaticResource GridModalPopupContentControlExpanded}">
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="60"/>
+						<RowDefinition/>
+						<RowDefinition Height="60"/>
+					</Grid.RowDefinitions>
+
+					<Grid>
+						<Label Content="Add Videos from Channel / Playlist"
+									 Style="{StaticResource t20pTitle}"
+									 FontWeight="Normal"
+									 Foreground="Black"
+									 Padding="2 3"
+									 VerticalAlignment="Center"
+									 HorizontalAlignment="Center"/>
+
+						<Button Style="{StaticResource MDH.Controls.Buttons.PathButton.LightSurface}"
+										HorizontalAlignment="Right"
+										VerticalAlignment="Top"
+										Command="{Binding CloseAddNewVideosDialogCommand}">
+							<Icon Kind="Close" Foreground="Black"/>
+						</Button>
+					</Grid>
+
+					<StackPanel Margin="20 20"
+											Grid.Row="1">
+
+						<Label Content="Source Url: "
+									 Style="{StaticResource t15pSubhead}"
+									 Foreground="Black"
+									 FontWeight="Light"
+									 Padding="2 3"
+									 HorizontalAlignment="Left"/>
+
+						<TextBox Style="{StaticResource MDH.Controls.TextBox.FlatHintedTextBox}"
+										 FontSize="14pt"
+										 Text="{Binding SourceUrl}"
+										 FontWeight="Light"
+										 FontFamily="{StaticResource DefaultFont}"/>
+					</StackPanel>
+
+					<Grid Row="2">
+						<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+							<Button Style="{StaticResource MDH.Controls.Buttons.FlatButton}"
+											Foreground="{StaticResource MDH.Palette.Red.600}"
+											MDH.Swatch="Red"
+											Command="{Binding CloseAddNewVideosDialogCommand}"
+											Content="CANCEL"/>
+
+							<Button Style="{StaticResource MDH.Controls.Buttons.FlatButton}"
+											Foreground="{StaticResource MDH.Palette.Teal.600}"
+											MDH.Swatch="Teal"
+											Command="{Binding AddVideosFromChannelOrPlaylist}"
+											Content="OKAY"/>
+						</StackPanel>
+					</Grid>
+				</Grid>
+			</Grid>
+		</Grid>
+	</Grid>
+</UserControl>

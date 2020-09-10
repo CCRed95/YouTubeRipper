@@ -1,0 +1,15 @@
+﻿<Application x:Class="YouTubeRipper.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:youTubeRipper="clr-namespace:YouTubeRipper">
+	<Application.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="pack://application:,,,/Ccr.MDHybrid;component/MDHybrid/Themes/Generic.xaml"/>
+				<ResourceDictionary>
+					<youTubeRipper:AppBootstrapper x:Key="bootstrapper"/>
+				</ResourceDictionary>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Application.Resources>
+</Application>
