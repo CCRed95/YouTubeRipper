@@ -13,6 +13,69 @@ namespace YouTubeRipper.Media
 {
 	public class MediaConverter
 	{
+		public static async Task<FileInfo> ConvertMP4ToMp3Async(
+			[NotNull] FileInfo sourceVideoMp4File,
+			EventHandler<ConversionProgressEventArgs> progressUpdated = null)
+		{
+			sourceVideoMp4File.IsNotNull(nameof(sourceVideoMp4File));
+
+			var targetAudioName = sourceVideoMp4File.GetFileNameWithoutExtension();
+
+			if (sourceVideoMp4File.Directory == null)
+				throw new DirectoryNotFoundException(
+					$"Source video file directory is null.");
+
+			var targetAudioFile = new FileInfo(
+				$@"{sourceVideoMp4File.Directory.FullName}\{targetAudioName}.mp3");
+
+			var ffmpegPath = AppDomain.CurrentDomain.BaseDirectory + "ffmpeg.exe";
+
+			var inputFile = new MediaFile(sourceVideoMp4File.FullName);
+			var outputFile = new MediaFile(targetAudioFile.FullName);
+
+			var ffmpeg = new Engine(ffmpegPath);
+
+			var cancellationToken = new CancellationToken();
+
+
+			void onFFMpegProgress(object sender, ConversionProgressEventArgs args)
+			{
+				progressUpdated?.Invoke(sender, args);
+			}
+
+			void onFFMpegError(object sender, ConversionErrorEventArgs args)
+			{
+				var ffmpegEngine = sender.As<Engine>();
+				ffmpegEngine.Error -= onFFMpegError;
+
+				Console.WriteLine($"FFMpeg Error: {args.Exception}");
+			}
+
+			void onFFMpegComplete(object sender, ConversionCompleteEventArgs args)
+			{
+				ffmpeg.Error -= onFFMpegError;
+				ffmpeg.Progress -= onFFMpegProgress;
+				ffmpeg.Complete -= onFFMpegComplete;
+			}
+
+			ffmpeg.Error += onFFMpegError;
+			ffmpeg.Progress += onFFMpegProgress;
+			ffmpeg.Complete += onFFMpegComplete;
+
+			var result = await ffmpeg.ConvertAsync(
+				inputFile,
+				outputFile,
+				cancellationToken);
+
+			return result.FileInfo;
+		}
+	}
+}
+
+
+/*
+
+old
 		public static FileInfo ConvertMP4ToMp3(
 			[NotNull] FileInfo sourceVideoMp4File)
 		{
@@ -56,69 +119,7 @@ namespace YouTubeRipper.Media
 		}
 
 
-		public static async Task<FileInfo> ConvertMP4ToMp3Async(
-			[NotNull] FileInfo sourceVideoMp4File,
-			EventHandler<ConversionProgressEventArgs> progressUpdated = null)
-		{
-			sourceVideoMp4File.IsNotNull(nameof(sourceVideoMp4File));
 
-			var targetAudioName = sourceVideoMp4File.GetFileNameWithoutExtension();
-
-			if (sourceVideoMp4File.Directory == null)
-				throw new DirectoryNotFoundException(
-					$"Source video file directory is null.");
-
-			var targetAudioFile = new FileInfo(
-				$@"{sourceVideoMp4File.Directory.FullName}\{targetAudioName}.mp3");
-
-			var ffmpegPath = AppDomain.CurrentDomain.BaseDirectory + "ffmpeg.exe";
-
-			var inputFile = new MediaFile(sourceVideoMp4File.FullName);
-			var outputFile = new MediaFile(targetAudioFile.FullName);
-
-			var ffmpeg = new Engine(ffmpegPath);
-
-			var cancellationToken = new CancellationToken();
-
-
-			void onFFMpegProgress(object sender, ConversionProgressEventArgs args)
-			{
-				progressUpdated?.Invoke(sender, args);
-			}
-
-			void onFFMpegError(object sender, ConversionErrorEventArgs args)
-			{
-				var ffmpegEngine = sender.As<Engine>();
-				ffmpegEngine.Error -= onFFMpegError;
-
-				Console.WriteLine($"FFMpeg Error: {args.Exception}");
-
-				//return null;
-			}
-
-			void onFFMpegComplete(object sender, ConversionCompleteEventArgs args)
-			{
-				ffmpeg.Error -= onFFMpegError;
-				ffmpeg.Progress -= onFFMpegProgress;
-				ffmpeg.Complete -= onFFMpegComplete;
-			}
-
-			ffmpeg.Error += onFFMpegError;
-			ffmpeg.Progress += onFFMpegProgress;
-			ffmpeg.Complete += onFFMpegComplete;
-
-			var result = await ffmpeg.ConvertAsync(
-				inputFile,
-				outputFile,
-				cancellationToken);
-
-			return result.FileInfo;
-		}
-	}
-}
-
-
-/*
 using System;
 using System.ComponentModel;
 using System.Diagnostics;

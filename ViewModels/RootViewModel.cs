@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
-using AngleSharp.Text;
 using Caliburn.Micro;
 using Ccr.MaterialDesign.MVVM;
 using Ccr.Std.Core.Extensions;
@@ -338,8 +337,8 @@ namespace YouTubeRipper.ViewModels
 					if (!mp3File.Exists)
 						Console.WriteLine($"Cannot convert video {mp4FileInfo.FullName} from mp4 to mp3!");
 
-					else
-						mp4FileInfo.Delete();
+					//else
+					//	mp4FileInfo.Delete();
 
 					var audioShellObject = new AudioShellObject(mp3File);
 
