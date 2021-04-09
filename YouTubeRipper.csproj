@@ -15,7 +15,7 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>publish\</PublishUrl>
+    <PublishUrl>D:\podcache-drive\Apps\YoutTubeRipper\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -25,9 +25,13 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
+    <TargetCulture>en</TargetCulture>
+    <ProductName>Youtube Ripper</ProductName>
+    <PublisherName>CCRed95</PublisherName>
     <ApplicationRevision>1</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <ApplicationVersion>6.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
+    <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -56,16 +60,7 @@
     <StartupObject />
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>19C32627A274BB407B163B0E67D8907728E7BB71</ManifestCertificateThumbprint>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ManifestKeyFile>YouTubeRipper_TemporaryKey.pfx</ManifestKeyFile>
-  </PropertyGroup>
-  <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignManifests>true</SignManifests>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -90,7 +85,10 @@
     </ApplicationDefinition>
     <Compile Include="AppBootstrapper.cs" />
     <Compile Include="Extensions\FileInfoExtensions.cs" />
+    <Compile Include="Markup\ValueConverters\DateTimeToSimpleDateConverter.cs" />
     <Compile Include="Markup\ValueConverters\DoubleToPercentageConverter.cs" />
+    <Compile Include="Markup\ValueConverters\InvertableBoolToVisibilityConverter.cs" />
+    <Compile Include="Markup\ValueConverters\TimeSpanSimpleConverter.cs" />
     <Compile Include="Markup\ValueConverters\UrlToImageSourceConverter.cs" />
     <Compile Include="Media\DateTimeRecognizer.cs" />
     <Compile Include="Media\MediaConverter.cs" />
@@ -100,8 +98,11 @@
     <Compile Include="Media\Metadata\SRP.cs" />
     <Compile Include="Media\Metadata\VideoShellObject.cs" />
     <Compile Include="ViewModels\AddVideosPopupViewModel.cs" />
+    <Compile Include="ViewModels\NotifyTaskCompletion.cs" />
     <Compile Include="ViewModels\RootViewModel.cs" />
     <Compile Include="Models\VideoInfo.cs" />
+    <Compile Include="Models\UrlSourceLinkType.cs" />
+    <Compile Include="YouTubeAPI\StreamManifestHelper.cs" />
     <Compile Include="Views\RootView.xaml.cs">
       <DependentUpon>RootView.xaml</DependentUpon>
     </Compile>
@@ -109,6 +110,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="YouTubeAPI\HttpClientExtensions.cs" />
+    <Compile Include="YouTubeAPI\YouTubeAPIHelper.cs" />
+    <Compile Include="YouTubeAPI\YouTubeAuthorizedHttpClient.cs" />
     <Page Include="Views\RootView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -156,14 +160,17 @@
     <PackageReference Include="Ccr.Xaml">
       <Version>2.2.0</Version>
     </PackageReference>
+    <PackageReference Include="Google.Apis.YouTube.v3">
+      <Version>1.50.0.2238</Version>
+    </PackageReference>
     <PackageReference Include="xFFmpeg.NET">
       <Version>3.4.0</Version>
     </PackageReference>
     <PackageReference Include="YoutubeExplode">
-      <Version>5.1.3</Version>
+      <Version>6.0.0-alpha2</Version>
     </PackageReference>
     <PackageReference Include="YoutubeExplode.Converter">
-      <Version>1.5.1</Version>
+      <Version>2.0.2</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -183,5 +190,6 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

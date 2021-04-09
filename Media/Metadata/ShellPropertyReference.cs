@@ -128,9 +128,7 @@ namespace YouTubeRipper.Media.Metadata
 			}
 		}
 
-
-
-
+		
 		protected ShellRefProperty(
 			PropertyKey propertyKey)
 		{
@@ -138,6 +136,8 @@ namespace YouTubeRipper.Media.Metadata
 		}
 	}
 }
+
+
 /*		public object ValueBase
 		{
 			get => _shellPropertyBase.ValueAsObject;

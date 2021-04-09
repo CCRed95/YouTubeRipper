@@ -8,144 +8,145 @@ namespace YouTubeRipper.Media.Metadata
 {
 	public class VideoShellObject
 	{
-		private readonly ShellObject shellObject;
+		private readonly ShellObject _shellObject;
 
 		protected FileInfo FileInfo { get; }
 
 
 		/// <summary>
-		/// Gets the height / vertical resolution of the video in pixels
+		/// Gets the height / vertical resolution of the video in pixels.
 		/// </summary>
 		public uint FrameHeight
 		{
 			get
 			{
-				var _rawValue = GetValue(shellObject.Properties.GetProperty(
+				var rawValue = GetValue(_shellObject.Properties.GetProperty(
 					SystemProperties.System.Video.FrameHeight));
-				return uint.Parse(_rawValue);
+				return uint.Parse(rawValue);
 			}
 		}
 
 		/// <summary>
-		/// Gets the width / horizontal resolution of the video in pixels
+		/// Gets the width / horizontal resolution of the video in pixels.
 		/// </summary>
 		public uint FrameWidth
 		{
 			get
 			{
-				var _rawValue = GetValue(shellObject.Properties.GetProperty(
+				var rawValue = GetValue(_shellObject.Properties.GetProperty(
 					SystemProperties.System.Video.FrameWidth));
-				return uint.Parse(_rawValue);
+				return uint.Parse(rawValue);
 			}
 		}
 
 		/// <summary>
-		/// Gets the encoding data rate of the video in kbps
+		/// Gets the encoding data rate of the video in kbps.
 		/// </summary>
 		public double VideoDataRate
 		{
 			get
 			{
-				var _rawValue = GetValue(shellObject.Properties.GetProperty(
+				var rawValue = GetValue(_shellObject.Properties.GetProperty(
 					SystemProperties.System.Video.EncodingBitrate));
-				return uint.Parse(_rawValue) / 1000d;
+				return uint.Parse(rawValue) / 1000d;
 			}
 		}
 
 		/// <summary>
-		/// Gets the total bitrate of the video in kbps
+		/// Gets the total bitrate of the video in kbps.
 		/// </summary>
 		public double TotalVideoBitrate
 		{
 			get
 			{
-				var _rawValue = GetValue(shellObject.Properties.GetProperty(
+				var rawValue = GetValue(_shellObject.Properties.GetProperty(
 					SystemProperties.System.Video.TotalBitrate));
-				return uint.Parse(_rawValue) / 1000d;
+				return uint.Parse(rawValue) / 1000d;
 			}
 		}
 
 		/// <summary>
-		/// Gets the frame rate of the video in frames per second
+		/// Gets the frame rate of the video in frames per second.
 		/// </summary>
 		public double VideoFrameRate
 		{
 			get
 			{
-				var _rawValue = GetValue(shellObject.Properties.GetProperty(
+				var rawValue = GetValue(_shellObject.Properties.GetProperty(
 					SystemProperties.System.Video.FrameRate));
-				return double.Parse(_rawValue) / 1000d;
+				return double.Parse(rawValue) / 1000d;
 			}
 		}
 		
 		/// <summary>
-		/// Gets the duration of the video as a TimeSpan object
+		/// Gets the duration of the video as a TimeSpan object.
 		/// </summary>
 		public TimeSpan Duration
 		{
 			get
 			{
-				var _rawValue = GetValue(shellObject.Properties.GetProperty(
+				var rawValue = GetValue(_shellObject.Properties.GetProperty(
 					SystemProperties.System.Media.Duration));
 
-				if (_rawValue.IsNullOrWhiteSpace())
+				if (rawValue.IsNullOrWhiteSpace())
 					return TimeSpan.Zero;
 				
-				var _100nsUnits = long.Parse(_rawValue);
+				var _100nsUnits = long.Parse(rawValue);
 				var _seconds = _100nsUnits / 10000000d;
+
 				return TimeSpan.FromSeconds(_seconds);
 			}
 		}
 
 		/// <summary>
-		/// Gets the encoding settings of the video
+		/// Gets the encoding settings of the video.
 		/// </summary>
 		public string EncodingSettings
 		{
 			get
 			{
-				var _rawValue = GetValue(shellObject.Properties.GetProperty(
+				var rawValue = GetValue(_shellObject.Properties.GetProperty(
 					SystemProperties.System.Media.EncodingSettings));
-				return _rawValue;
+				return rawValue;
 			}
 		}
 
 		/// <summary>
-		/// Gets the number of audio channels in the video
+		/// Gets the number of audio channels in the video.
 		/// </summary>
 		public uint AudioChannels
 		{
 			get
 			{
-				var _rawValue = GetValue(shellObject.Properties.GetProperty(
+				var rawValue = GetValue(_shellObject.Properties.GetProperty(
 					SystemProperties.System.Audio.ChannelCount));
-				return uint.Parse(_rawValue);
+				return uint.Parse(rawValue);
 			}
 		}
 
 		/// <summary>
-		/// Gets the encoding bitrate of the video's audio in kbps
+		/// Gets the encoding bitrate of the video's audio in kbps.
 		/// </summary>
 		public double AudioEncodingBitrate
 		{
 			get
 			{
-				var _rawValue = GetValue(shellObject.Properties.GetProperty(
+				var rawValue = GetValue(_shellObject.Properties.GetProperty(
 					SystemProperties.System.Audio.EncodingBitrate));
-				return uint.Parse(_rawValue) / 1000d;
+				return uint.Parse(rawValue) / 1000d;
 			}
 		}
 
 		/// <summary>
-		/// Gets the sample rate of the video's audio in kHz
+		/// Gets the sample rate of the video's audio in kHz.
 		/// </summary>
 		public double AudioSampleRate
 		{
 			get
 			{
-				var _rawValue = GetValue(shellObject.Properties.GetProperty(
+				var rawValue = GetValue(_shellObject.Properties.GetProperty(
 					SystemProperties.System.Audio.SampleRate));
-				return uint.Parse(_rawValue) / 1000d;
+				return uint.Parse(rawValue) / 1000d;
 			}
 		}
 
@@ -154,9 +155,9 @@ namespace YouTubeRipper.Media.Metadata
 			FileInfo fileInfo)
 		{
 			FileInfo = fileInfo;
-			shellObject = ShellObject.FromParsingName(fileInfo.FullName);
+			_shellObject = ShellObject.FromParsingName(fileInfo.FullName);
 
-			if (shellObject == null)
+			if (_shellObject == null)
 				throw new NotSupportedException(
 					$"Shell object is null.");
 		}
@@ -181,13 +182,13 @@ namespace YouTubeRipper.Media.Metadata
 		}
 
 		public bool TrySetDateReleased(
-			DateTime? dateTimeUTC = null)
+			DateTime? dateTimeUtc = null)
 		{
-			dateTimeUTC ??= DateTime.UtcNow;
+			dateTimeUtc ??= DateTime.UtcNow;
 
 			return TryWriteProperty(
 				SystemProperties.System.Media.DateReleased,
-				dateTimeUTC);
+				dateTimeUtc);
 		}
 
 		public bool TrySetEncodedBy(
@@ -213,7 +214,7 @@ namespace YouTubeRipper.Media.Metadata
 		{
 			try
 			{
-				using var shellPropertyWriter = shellObject
+				using var shellPropertyWriter = _shellObject
 					.Properties
 					.GetPropertyWriter();
 

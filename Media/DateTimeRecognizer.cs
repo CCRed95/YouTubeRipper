@@ -28,7 +28,7 @@ namespace YouTubeRipper.Media
 					matchStartIndex, 
 					matchLength);
 
-				var formattedSring = inputText.Replace(dateString, "");
+				var formattedString = inputText.Replace(dateString, "");
 
 				if (!DateTime.TryParse(dateString, out var date))
 				{
@@ -37,12 +37,12 @@ namespace YouTubeRipper.Media
 
 					return false;
 				}
-
-				extractedText = formattedSring;
+				extractedText = formattedString;
 				dateTime = date;
 
 				return true;
 			}
+
 			if (_longformDateRegex.IsMatch(inputText))
 			{
 				var match = _longformDateRegex.Match(inputText);
@@ -54,7 +54,7 @@ namespace YouTubeRipper.Media
 					matchStartIndex,
 					matchLength);
 
-				var formattedSring = inputText.Replace(dateString, "");
+				var formattedString = inputText.Replace(dateString, "");
 
 				if (!DateTime.TryParse(dateString, out var date))
 				{
@@ -63,8 +63,7 @@ namespace YouTubeRipper.Media
 
 					return false;
 				}
-
-				extractedText = formattedSring;
+				extractedText = formattedString;
 				dateTime = date;
 
 				return true;

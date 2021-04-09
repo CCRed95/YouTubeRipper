@@ -12,5 +12,5 @@ namespace YouTubeRipper.Extensions
 				0,
 				fileInfo.Name.Length - length);
 		}
-	}
+  }
 }

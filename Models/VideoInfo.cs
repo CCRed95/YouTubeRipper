@@ -1,5 +1,7 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using Ccr.MaterialDesign.MVVM;
+using YoutubeExplode.Playlists;
 using YoutubeExplode.Videos;
 
 namespace YouTubeRipper.Models
@@ -7,7 +9,8 @@ namespace YouTubeRipper.Models
 	public class VideoInfo
 		: ViewModelBase
 	{
-		private Video _video;
+		private VideoId _videoId;
+		private object _video;
 		private string _videoTitle;
 		private string _uploader;
 		private string _description;
@@ -15,9 +18,20 @@ namespace YouTubeRipper.Models
 		private string _thumbnailImageSource;
 		private bool _shouldDownload = true;
 		private bool _isDownloadComplete;
+		private DateTimeOffset _uploadDate;
 
 
-		public Video Video
+		public VideoId VideoId
+		{
+			get => _videoId;
+			set
+			{
+				_videoId = value;
+				NotifyOfPropertyChange(() => VideoId);
+			}
+		}
+
+		public object Video
 		{
 			get => _video;
 			set
@@ -97,16 +111,48 @@ namespace YouTubeRipper.Models
 			}
 		}
 
+		public DateTimeOffset UploadDate
+		{
+			get => _uploadDate;
+			private set
+			{
+				_uploadDate = value;
+				NotifyOfPropertyChange(() => UploadDate);
+			}
+		}
+
 
 		public VideoInfo(
-			Video video)
+			PlaylistVideo video,
+			DateTime? publishedAt = null)
 		{
 			Video = video;
+			VideoId = video.Id;
 			Description = video.Description;
 			Uploader = video.Author;
 			VideoDuration = video.Duration;
 			VideoTitle = video.Title;
 			ThumbnailImageSource = video.Thumbnails.MediumResUrl;
+
+			UploadDate = publishedAt ?? new DateTimeOffset(1971, 1, 1, 0, 0, 0, TimeSpan.Zero);
+
+			ShouldDownload = true;
+		}
+
+		public VideoInfo(
+			Video video)
+		{
+			Video = video;
+			VideoId = video.Id;
+			Description = video.Description;
+			Uploader = video.Author;
+			VideoDuration = video.Duration;
+			VideoTitle = video.Title;
+			ThumbnailImageSource = video.Thumbnails.MediumResUrl;
+			
+			UploadDate = video.UploadDate;
+			
+			ShouldDownload = true;
 		}
 	}
 }
